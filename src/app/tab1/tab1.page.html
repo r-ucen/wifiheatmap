@@ -1,15 +1,10 @@
 <ion-header [translucent]="true">
-  
   <ion-toolbar>
-    <ion-title>
-      Measure
-    </ion-title>
+    <ion-title> Measure </ion-title>
   </ion-toolbar>
-
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
   <ion-card>
     <ion-card-content>
       <ion-row class="ion-justify-content-center">
@@ -23,32 +18,55 @@
 
   <ion-card>
     <ion-card-content>
-      <div #canvasWrapper style="width: 100%; height: 300px; position: relative;">
-        <canvas #heatmapCanvas style="width: 100%; height: 100%; display: block;"></canvas>
+      <div
+        #canvasWrapper
+        style="width: 100%; height: 300px; position: relative"
+      >
+        <canvas
+          #heatmapCanvas
+          style="width: 100%; height: 100%; display: block"
+        ></canvas>
       </div>
     </ion-card-content>
   </ion-card>
-
 </ion-content>
 
 <ion-footer class="ion-padding-bottom">
-  
   <ion-row class="ion-justify-content-center">
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large" (click)="turnLeft()"><--</ion-button>
+      <ion-button expand="block" fill="solid" size="large" (click)="turnLeft()"
+        ><--</ion-button
+      >
     </ion-col>
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large" (click)="turnRight()">--></ion-button>
+      <ion-button expand="block" fill="solid" size="large" (click)="turnRight()"
+        >--></ion-button
+      >
     </ion-col>
   </ion-row>
 
   <ion-row class="ion-justify-content-center">
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large" color="success" (click)="startMeasuring()" [disabled]="isMeasuring">Start</ion-button>
+      <ion-button
+        expand="block"
+        fill="solid"
+        size="large"
+        color="success"
+        (click)="startMeasuring()"
+        [disabled]="isMeasuring"
+        >Start</ion-button
+      >
     </ion-col>
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large" color="danger" (click)="stopMeasuring()" [disabled]="!isMeasuring">Stop</ion-button>
+      <ion-button
+        expand="block"
+        fill="solid"
+        size="large"
+        color="danger"
+        (click)="stopMeasuring()"
+        [disabled]="!isMeasuring"
+        >Stop</ion-button
+      >
     </ion-col>
   </ion-row>
-
 </ion-footer>

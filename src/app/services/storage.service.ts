@@ -6,16 +6,19 @@ import { SavedMeasurement } from '../models/app.model';
   providedIn: 'root',
 })
 export class StorageService {
-  private KEY  = "wifi_heatmap_measurements"
+  private KEY = 'wifi_heatmap_measurements';
 
   measurements: SavedMeasurement[] = [];
 
   constructor() {
-    console.log("Storage service initialized");
+    console.log('Storage service initialized');
   }
 
   async saveMeasurements() {
-    await Preferences.set({ key: this.KEY, value: JSON.stringify(this.measurements) });
+    await Preferences.set({
+      key: this.KEY,
+      value: JSON.stringify(this.measurements),
+    });
   }
 
   async loadMeasurements(): Promise<void> {
@@ -29,7 +32,7 @@ export class StorageService {
   }
 
   async updateMeasurementName(id: number, newName: string) {
-    const measurement = this.measurements.find(m => m.id === id);
+    const measurement = this.measurements.find((m) => m.id === id);
     if (measurement) {
       measurement.name = newName;
       await this.saveMeasurements();
@@ -37,7 +40,7 @@ export class StorageService {
   }
 
   async deleteMeasurement(id: number) {
-    const m = this.measurements.filter(m => m.id !== id);
+    const m = this.measurements.filter((m) => m.id !== id);
     if (m) {
       this.measurements = m;
       await this.saveMeasurements();

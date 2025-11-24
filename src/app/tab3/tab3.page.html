@@ -1,16 +1,22 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Settings
-    </ion-title>
+    <ion-title> Settings </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-list>
     <ion-item>
-      <ion-label position="stacked">Step Size (pixels): {{ settings.stepSize }}</ion-label>
-      <ion-range min="5" max="20" step="1" [(ngModel)]="settings.stepSize" (ionChange)="onSettingsChange()">
+      <ion-label position="stacked"
+        >Step Size (pixels): {{ settings.stepSize }}</ion-label
+      >
+      <ion-range
+        min="5"
+        max="20"
+        step="1"
+        [(ngModel)]="settings.stepSize"
+        (ionChange)="onSettingsChange()"
+      >
         <div slot="start">5</div>
         <div slot="end">20</div>
       </ion-range>
@@ -18,17 +24,35 @@
 
     <ion-item>
       <ion-label position="stacked">Scan Interval (ms)</ion-label>
-      <ion-input type="number" [(ngModel)]="settings.scanActiveIntervalMs" (ionInput)="onSettingsChange()"></ion-input>
+      <ion-input
+        type="number"
+        [(ngModel)]="settings.scanActiveIntervalMs"
+        (ionInput)="onSettingsChange()"
+      ></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Heatmap Radius: {{ settings.heatmapRadius }}</ion-label>
-      <ion-range min="5" max="50" [(ngModel)]="settings.heatmapRadius" (ionChange)="onSettingsChange()"></ion-range>
+      <ion-label position="stacked"
+        >Heatmap Radius: {{ settings.heatmapRadius }}</ion-label
+      >
+      <ion-range
+        min="5"
+        max="50"
+        [(ngModel)]="settings.heatmapRadius"
+        (ionChange)="onSettingsChange()"
+      ></ion-range>
     </ion-item>
 
-     <ion-item>
-      <ion-label position="stacked">Heatmap Blur: {{ settings.heatmapBlur }}</ion-label>
-      <ion-range min="5" max="50" [(ngModel)]="settings.heatmapBlur" (ionChange)="onSettingsChange()"></ion-range>
+    <ion-item>
+      <ion-label position="stacked"
+        >Heatmap Blur: {{ settings.heatmapBlur }}</ion-label
+      >
+      <ion-range
+        min="5"
+        max="50"
+        [(ngModel)]="settings.heatmapBlur"
+        (ionChange)="onSettingsChange()"
+      ></ion-range>
     </ion-item>
   </ion-list>
 </ion-content>

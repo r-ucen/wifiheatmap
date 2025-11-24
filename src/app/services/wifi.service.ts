@@ -6,42 +6,46 @@ import { Platform } from '@ionic/angular/standalone';
   providedIn: 'root',
 })
 export class WifiService {
-  
   constructor(private platform: Platform) {}
 
   async checkPermissions(): Promise<boolean> {
     if (!this.platform.is('capacitor')) {
-      return true
+      return true;
     }
 
     try {
       const { status } = await CapacitorWifi.checkPermission();
       if (status) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     } catch (e) {
-      console.log("permission error: ", e)
-      return false
+      console.log('permission error: ', e);
+      return false;
     }
   }
 
-  async getWifiInfo(): Promise<{ rssi: number, ssid: string }> {
+  async getWifiInfo(): Promise<{ rssi: number; ssid: string }> {
     if (!this.platform.is('capacitor')) {
-      return { rssi: Math.floor(Math.random() * 100) - 100, ssid: "simulated wifi" }
+      return {
+        rssi: Math.floor(Math.random() * 100) - 100,
+        ssid: 'simulated wifi',
+      };
     }
 
     try {
-      const networkConfig = await CapacitorWifi.getCurrentNetworkConfiguration()
+      const networkConfig =
+        await CapacitorWifi.getCurrentNetworkConfiguration();
       return {
         rssi: networkConfig.rssi,
-        ssid: networkConfig.ssid ? networkConfig.ssid.replace(/"/g, '') : "unknown"
-      }
+        ssid: networkConfig.ssid
+          ? networkConfig.ssid.replace(/"/g, '')
+          : 'unknown',
+      };
     } catch (e) {
-      console.log("error getting wifi info:", e)
+      console.log('error getting wifi info:', e);
       return { rssi: 0, ssid: 'disconnected' };
     }
   }
 }
-
