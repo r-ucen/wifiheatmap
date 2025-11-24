@@ -1,7 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, IonRow, IonLabel, IonButton, IonCol, IonFooter } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, IonRow, IonLabel, IonButton, IonCol, IonFooter, Platform } from '@ionic/angular/standalone';
 import { StorageService } from '../services/storage.service';
 import { HeatmapPoint, Direction } from '../models/app.model';
+import { CapacitorWifi } from 'capacitorjs-plugin-wifi';
 import simpleheat from 'simpleheat';
 
 @Component({
@@ -16,17 +17,145 @@ export class Tab1Page {
   @ViewChild('heatmapCanvas') canvasRef!: ElementRef<HTMLCanvasElement>
   @ViewChild('canvasWrapper') wrapperRef!: ElementRef<HTMLElement>
 
-  currentRssi: number | null = null
-  currentX = 0
-  currentY = 0
-  currentDirection = Direction.Up;
+  currentRssi: number = 0
+  currentSsid: string | null = null;
+  currentX: number = 0
+  currentY: number = 0
+  currentDirection: Direction = Direction.Up;
   heatmap: any
   heatmapPoints: HeatmapPoint[] = []
+  isMeasuring: boolean = false
   private ctx: CanvasRenderingContext2D | null = null
 
-  constructor(private storageService: StorageService) {}
+  private signalInterval: any
 
-  ionViewDidEnter(): void {
+  constructor(private storageService: StorageService, private platform: Platform) {}
+
+  startMeasuring() {
+    this.isMeasuring = true
+
+    this.currentX = 0
+    this.currentY = 0
+    Direction.Up
+    this.heatmapPoints = []
+
+    this.updateWifiInfo()
+
+    this.addPoint(0, 0, this.currentRssi)
+    
+    this.startSignalWatch(4000, true)
+  }
+
+  stopMeasuring() {
+    this.isMeasuring = false
+    this.stopSignalWatch()
+
+    this.startSignalWatch(1000, false)
+  }
+
+  async checkAndRequestWifiPermissions() {
+    try {
+      const perm = await CapacitorWifi.checkPermission()
+      if (!perm.status) {
+        CapacitorWifi.requestPermission()
+      }
+    } catch (e) {
+      console.log("no permission: ", e)
+    }
+  }
+
+  async updateWifiInfo() {
+    try {
+      if (!await CapacitorWifi.getWifiStatus()) {
+        this.currentRssi = 0
+        this.currentSsid = "disconnected"
+      }
+      const wifiInfo = await CapacitorWifi.getCurrentNetworkConfiguration()
+
+      if (wifiInfo) {
+        this.currentRssi = wifiInfo.rssi
+        this.currentSsid = wifiInfo.ssid ? wifiInfo.ssid.replace(/"/g, '') : "unknown"
+      }
+    } catch (e) {
+      console.log("error getting wifi info:", e)
+    }
+  }
+  
+  turnLeft() {
+    switch(this.currentDirection) {
+      case Direction.Up:
+        this.currentDirection = Direction.Left
+        break;
+      case Direction.Down:
+        this.currentDirection = Direction.Right
+        break;
+      case Direction.Left:
+        this.currentDirection = Direction.Down
+        break;
+      case Direction.Right:
+        this.currentDirection = Direction.Up
+    }
+  }
+
+  turnRight() {
+    switch(this.currentDirection) {
+      case Direction.Up:
+        this.currentDirection = Direction.Right
+        break;
+      case Direction.Down:
+        this.currentDirection = Direction.Left
+        break;
+      case Direction.Left:
+        this.currentDirection = Direction.Up
+        break;
+      case Direction.Right:
+        this.currentDirection = Direction.Down
+    }
+  }
+
+  startSignalWatch(delay: number, recordPoints: boolean) {
+    this.stopSignalWatch();
+    
+    this.signalInterval = setInterval(async () => {
+      await this.updateWifiInfo();
+
+      if (recordPoints) {
+        switch (this.currentDirection) {
+          case Direction.Up:
+            this.currentY -= 4;
+            break;
+          case Direction.Down:
+            this.currentY += 4;
+            break;
+          case Direction.Left:
+            this.currentX -= 4;
+            break;
+          case Direction.Right:
+            this.currentX += 4;
+            break;
+        }
+
+        this.addPoint(this.currentX, this.currentY, this.currentRssi);
+      }
+      console.log(this)
+    }, delay);
+  }
+
+  stopSignalWatch() {
+    if (this.signalInterval) {
+      clearInterval(this.signalInterval);
+    }
+  }
+
+  async ionViewDidEnter() {
+
+    if (this.platform.is('capacitor')) {
+      await this.checkAndRequestWifiPermissions()
+      this.startSignalWatch(1000, false);
+    } else {
+      console.log("not mobile")
+    }
+
     if (!this.canvasRef || !this.wrapperRef) {
       console.error("canvas or wrapper not found")
       return;
@@ -43,27 +172,10 @@ export class Tab1Page {
     this.heatmap = simpleheat(canvas)
     this.heatmap.radius(10, 10)
     this.heatmap.max(100)
+  }
 
-    
-    let x = 0
-    let y = 0
-
-    let i = 0
-    setInterval(() => {
-      if (i < 10) {
-        this.addPoint(x += 4, y += 4, -10);
-      } else if (i < 20) {
-        this.addPoint(x += 4, y -= 4, -10);
-      } else if (i < 30) {
-        this.addPoint(x -= 4, y -= 4, -10);
-      } else if (i < 40) {
-        this.addPoint(x += 4, y -= 4, -10);
-      } else{
-        this.addPoint(x += 4, y -= 4, -10);
-      }
-      i++
-    }, 1000);
-
+  ionViewDidLeave() {
+    this.stopSignalWatch();
   }
 
   addPoint(x: number, y: number, rssi: number) {

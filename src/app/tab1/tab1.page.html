@@ -13,6 +13,9 @@
   <ion-card>
     <ion-card-content>
       <ion-row class="ion-justify-content-center">
+        <ion-label>SSID: {{ currentSsid }}</ion-label>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
         <ion-label>Signal strength: {{ currentRssi }} dBm</ion-label>
       </ion-row>
     </ion-card-content>
@@ -32,15 +35,20 @@
   
   <ion-row class="ion-justify-content-center">
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large"><--</ion-button>
+      <ion-button expand="block" fill="solid" size="large" (click)="turnLeft()"><--</ion-button>
     </ion-col>
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large">-->  </ion-button>
+      <ion-button expand="block" fill="solid" size="large" (click)="turnRight()">--></ion-button>
     </ion-col>
   </ion-row>
 
   <ion-row class="ion-justify-content-center">
-    <ion-button expand="block" fill="solid" shape="round" size="large" color="danger">Start/Stop</ion-button>
+    <ion-col>
+      <ion-button expand="block" fill="solid" size="large" color="success" (click)="startMeasuring()" [disabled]="isMeasuring">Start</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" fill="solid" size="large" color="danger" (click)="stopMeasuring()" [disabled]="!isMeasuring">Stop</ion-button>
+    </ion-col>
   </ion-row>
 
 </ion-footer>
