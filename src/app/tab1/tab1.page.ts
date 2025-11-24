@@ -36,7 +36,7 @@ export class Tab1Page {
 
     this.currentX = 0
     this.currentY = 0
-    Direction.Up
+    this.currentDirection = Direction.Up
     this.heatmapPoints = []
 
     this.updateWifiInfo()
