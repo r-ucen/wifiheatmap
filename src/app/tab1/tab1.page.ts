@@ -1,9 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, IonRow, IonLabel, IonButton, IonCol, IonFooter, Platform } from '@ionic/angular/standalone';
 import { StorageService } from '../services/storage.service';
-import { HeatmapPoint, Direction } from '../models/app.model';
+import { HeatmapPoint, Direction, AppSettings, DEFAULT_SETTINGS } from '../models/app.model';
 import { CapacitorWifi } from 'capacitorjs-plugin-wifi';
 import simpleheat from 'simpleheat';
+import { SettingsService } from '../services/settings.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tab1',
@@ -29,7 +31,26 @@ export class Tab1Page {
 
   private signalInterval: any
 
-  constructor(private storageService: StorageService, private platform: Platform) {}
+  settings: AppSettings = DEFAULT_SETTINGS;
+  private settingsSub!: Subscription;
+
+  constructor(
+    private storageService: StorageService,
+    private platform: Platform,
+    private settingsService: SettingsService
+  ) {}
+
+  ngOnInit() {
+    this.settingsSub = this.settingsService.settings$.subscribe(newSettings => {
+      this.settings = newSettings;
+    })
+  }
+
+  ngOnDestroy() {
+    this.isMeasuring = false
+    this.stopSignalWatch()
+    if (this.settingsSub) this.settingsSub.unsubscribe();
+  }
 
   startMeasuring() {
     this.isMeasuring = true
@@ -43,14 +64,14 @@ export class Tab1Page {
 
     this.addPoint(0, 0, this.currentRssi)
     
-    this.startSignalWatch(4000, true)
+    this.startSignalWatch(this.settings.scanActiveIntervalMs, true)
   }
 
   stopMeasuring() {
     this.isMeasuring = false
     this.stopSignalWatch()
 
-    this.startSignalWatch(1000, false)
+    this.startSignalWatch(this.settings.scanPassiveIntervalMs, false)
   }
 
   async checkAndRequestWifiPermissions() {
@@ -122,16 +143,16 @@ export class Tab1Page {
       if (recordPoints) {
         switch (this.currentDirection) {
           case Direction.Up:
-            this.currentY -= 4;
+            this.currentY -= this.settings.stepSize;
             break;
           case Direction.Down:
-            this.currentY += 4;
+            this.currentY += this.settings.stepSize;
             break;
           case Direction.Left:
-            this.currentX -= 4;
+            this.currentX -= this.settings.stepSize;
             break;
           case Direction.Right:
-            this.currentX += 4;
+            this.currentX += this.settings.stepSize;
             break;
         }
 
@@ -151,7 +172,7 @@ export class Tab1Page {
 
     if (this.platform.is('capacitor')) {
       await this.checkAndRequestWifiPermissions()
-      this.startSignalWatch(1000, false);
+      this.startSignalWatch(this.settings.scanPassiveIntervalMs, false);
     } else {
       console.log("not mobile")
     }
@@ -170,12 +191,13 @@ export class Tab1Page {
     this.ctx = canvas.getContext('2d')
 
     this.heatmap = simpleheat(canvas)
-    this.heatmap.radius(10, 10)
+    this.heatmap.radius(this.settings.heatmapRadius, this.settings.heatmapBlur)
     this.heatmap.max(100)
   }
 
   ionViewDidLeave() {
-    this.stopSignalWatch();
+    this.isMeasuring = false
+    this.stopSignalWatch()
   }
 
   addPoint(x: number, y: number, rssi: number) {
