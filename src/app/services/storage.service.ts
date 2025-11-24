@@ -5,7 +5,6 @@ import { SavedMeasurement } from '../models/app.model';
 @Injectable({
   providedIn: 'root',
 })
-
 export class StorageService {
   private KEY  = "wifi_heatmap_measurements"
 
