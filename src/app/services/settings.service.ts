@@ -39,4 +39,8 @@ export class SettingsService {
     })
   } 
 
+  get currentSettings(): AppSettings { // no subscribing
+    return this.settingsSubject.value;
+  }
+
 }
