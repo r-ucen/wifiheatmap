@@ -30,7 +30,10 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-modal trigger="save-measurement-modal" (willDismiss)="onWillDismiss($event)">
+  <ion-modal
+    trigger="save-measurement-modal"
+    (willDismiss)="onWillDismiss($event)"
+  >
     <ng-template>
       <ion-header>
         <ion-toolbar>
@@ -50,7 +53,7 @@
             labelPlacement="stacked"
             type="text"
             placeholder="Measurement name"
-            [(ngModel)]="savedMeasurement.name"
+            [(ngModel)]="savedMeasurementName"
           ></ion-input>
         </ion-item>
       </ion-content>

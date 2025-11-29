@@ -75,13 +75,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   heatmapPoints: HeatmapPoint[] = [];
   isMeasuring: boolean = false;
   settings: AppSettings = DEFAULT_SETTINGS;
-
-  savedMeasurement: SavedMeasurement = {
-    id: '',
-    name: '',
-    date: '',
-    heatmapPoints: [],
-  };
+  savedMeasurementName: string = '';
 
   private renderer!: HeatmapRenderer;
   private settingsSub!: Subscription;
@@ -253,20 +247,21 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   confirm() {
-    this.modal.dismiss(this.savedMeasurement.name, 'confirm');
+    this.modal.dismiss(this.savedMeasurementName, 'confirm');
   }
 
   onWillDismiss(event: CustomEvent<OverlayEventDetail>) {
     if (event.detail.role === 'confirm') {
-      this.savedMeasurement.id = uuidv4();
-      this.savedMeasurement.name = event.detail.data;
-      this.savedMeasurement.date = new Date().toLocaleString('en-GB', {
-        timeZone: 'Europe/London',
-      });
-      this.savedMeasurement.heatmapPoints = this.heatmapPoints;
-
-      this.storageService.addMeasurement(this.savedMeasurement);
-      this.savedMeasurement.name = '';
+      const newMeasurement: SavedMeasurement = {
+        id: uuidv4(),
+        name: event.detail.data,
+        date: new Date().toLocaleString('en-GB', {
+          timeZone: 'Europe/London',
+        }),
+        heatmapPoints: [...this.heatmapPoints],
+      };
+      this.savedMeasurementName = '';
+      this.storageService.addMeasurement(newMeasurement);
     }
   }
 }
