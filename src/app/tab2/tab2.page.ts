@@ -13,12 +13,9 @@ import {
   IonButtons,
   IonInput,
 } from '@ionic/angular/standalone';
-import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { OverlayEventDetail } from '@ionic/core';
 import { StorageService } from '../services/storage.service';
-import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SafeCall } from '@angular/compiler';
 import {
   AppSettings,
   DEFAULT_SETTINGS,
