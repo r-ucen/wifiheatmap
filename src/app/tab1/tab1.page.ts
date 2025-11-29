@@ -16,7 +16,12 @@ import {
   IonLabel,
   IonButton,
   IonCol,
-  IonFooter, IonModal, IonButtons, IonInput, IonItem } from '@ionic/angular/standalone';
+  IonFooter,
+  IonModal,
+  IonButtons,
+  IonInput,
+  IonItem,
+} from '@ionic/angular/standalone';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../services/storage.service';
@@ -31,14 +36,18 @@ import { SettingsService } from '../services/settings.service';
 import { Subscription, timer, switchMap, tap, filter } from 'rxjs';
 import { WifiService } from '../services/wifi.service';
 import { HeatmapRenderer } from '../utils/heatmap-renderer';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
   standalone: true,
-  imports: [IonItem, IonInput, IonButtons, IonModal, 
+  imports: [
+    IonItem,
+    IonInput,
+    IonButtons,
+    IonModal,
     IonFooter,
     IonCol,
     IonLabel,
@@ -50,7 +59,7 @@ import {v4 as uuidv4} from 'uuid';
     IonContent,
     IonCardContent,
     IonButton,
-    FormsModule
+    FormsModule,
   ],
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -71,7 +80,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     id: '',
     name: '',
     date: '',
-    heatmapPoints: []
+    heatmapPoints: [],
   };
 
   private renderer!: HeatmapRenderer;
@@ -251,7 +260,9 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (event.detail.role === 'confirm') {
       this.savedMeasurement.id = uuidv4();
       this.savedMeasurement.name = event.detail.data;
-      this.savedMeasurement.date = new Date().toLocaleString("en-GB", {timeZone: "Europe/London"});
+      this.savedMeasurement.date = new Date().toLocaleString('en-GB', {
+        timeZone: 'Europe/London',
+      });
       this.savedMeasurement.heatmapPoints = this.heatmapPoints;
 
       this.storageService.addMeasurement(this.savedMeasurement);

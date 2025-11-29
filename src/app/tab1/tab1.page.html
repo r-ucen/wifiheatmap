@@ -56,18 +56,27 @@
       </ion-content>
     </ng-template>
   </ion-modal>
-
 </ion-content>
 
 <ion-footer class="ion-padding-bottom">
   <ion-row class="ion-justify-content-center">
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large" (click)="turnLeft()" [disabled]="!isMeasuring"
+      <ion-button
+        expand="block"
+        fill="solid"
+        size="large"
+        (click)="turnLeft()"
+        [disabled]="!isMeasuring"
         ><--</ion-button
       >
     </ion-col>
     <ion-col>
-      <ion-button expand="block" fill="solid" size="large" (click)="turnRight()" [disabled]="!isMeasuring"
+      <ion-button
+        expand="block"
+        fill="solid"
+        size="large"
+        (click)="turnRight()"
+        [disabled]="!isMeasuring"
         >--></ion-button
       >
     </ion-col>
