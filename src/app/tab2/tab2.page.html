@@ -1,15 +1,23 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Tab 2 </ion-title>
+    <ion-title> Saved measurements</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list>
+    @for (measurement of storageService.measurements ; track measurement.id) {
+    <ion-item>
+      <ion-label>{{ measurement.name }}</ion-label>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+      <ion-button expand="block" fill="solid">Edit</ion-button>
+
+      <ion-button expand="block" fill="solid" color="danger">Delete</ion-button>
+    </ion-item>
+    } @empty {
+    <ion-item>
+      <ion-label>No measurements yet</ion-label>
+    </ion-item>
+    }
+  </ion-list>
 </ion-content>
