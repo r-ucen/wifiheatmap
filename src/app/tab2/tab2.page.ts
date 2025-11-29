@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import {
   IonHeader,
   IonToolbar,
@@ -19,7 +19,15 @@ import { StorageService } from '../services/storage.service';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SafeCall } from '@angular/compiler';
-import { SavedMeasurement } from '../models/app.model';
+import {
+  AppSettings,
+  DEFAULT_SETTINGS,
+  HeatmapPoint,
+  SavedMeasurement,
+} from '../models/app.model';
+import { HeatmapRenderer } from '../utils/heatmap-renderer';
+import { Subscription } from 'rxjs';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-tab2',
@@ -41,17 +49,36 @@ import { SavedMeasurement } from '../models/app.model';
   ],
 })
 export class Tab2Page {
+  @ViewChild('savedHeatmapCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('savedHeatmapCanvasWrapper') wrapperRef!: ElementRef<HTMLElement>;
   @ViewChild(IonModal) modal!: IonModal;
 
   measurementToEdit: SavedMeasurement | null = null;
+  settings: AppSettings = DEFAULT_SETTINGS;
+
+  private renderer!: HeatmapRenderer;
+  private settingsSub!: Subscription;
 
   constructor(
     public storageService: StorageService,
+    private settingsService: SettingsService,
     private alertController: AlertController,
   ) {}
 
+  ngOnInit() {
+    this.settingsSub = this.settingsService.settings$.subscribe(
+      (newSettings) => {
+        this.settings = newSettings;
+      },
+    );
+  }
+
   ionViewWillEnter() {
     this.storageService.loadMeasurements();
+  }
+
+  ngOnDestroy() {
+    this.settingsSub.unsubscribe();
   }
 
   async confirmDelete(id: string, name: string) {
@@ -75,11 +102,41 @@ export class Tab2Page {
     await alert.present();
   }
 
+  // heatmap
+
+  initCanvas() {
+    if (!this.canvasRef || !this.wrapperRef) return;
+
+    const wrapper = this.wrapperRef.nativeElement;
+    const canvas = this.canvasRef.nativeElement;
+
+    this.renderer = new HeatmapRenderer(
+      canvas,
+      this.settings.heatmapRadius,
+      this.settings.heatmapBlur,
+    );
+
+    this.renderer.resize(wrapper.clientWidth, wrapper.clientHeight);
+  }
+
+  render(points: HeatmapPoint[]) {
+    requestAnimationFrame(() => {
+      this.renderer?.render(points);
+    });
+  }
+
   // modal
 
   getMeasurementAndOpenModal(measurement: SavedMeasurement) {
     this.measurementToEdit = { ...measurement };
     this.modal.present();
+  }
+
+  onModalDidPresent() {
+    this.initCanvas();
+    if (this.measurementToEdit) {
+      this.render(this.measurementToEdit.heatmapPoints);
+    }
   }
 
   cancel() {

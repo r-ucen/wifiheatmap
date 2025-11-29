@@ -33,7 +33,10 @@
     }
   </ion-list>
 
-  <ion-modal (willDismiss)="onWillDismiss($event)">
+  <ion-modal
+    (willDismiss)="onWillDismiss($event)"
+    (didPresent)="onModalDidPresent()"
+  >
     <ng-template>
       @if (measurementToEdit) {
       <ion-header>
@@ -48,6 +51,18 @@
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
+        <ion-item>
+          <div
+            #savedHeatmapCanvasWrapper
+            style="width: 100%; height: 300px; position: relative"
+          >
+            <canvas
+              #savedHeatmapCanvas
+              style="width: 100%; height: 100%; display: block"
+            ></canvas>
+          </div>
+        </ion-item>
+
         <ion-item>
           <ion-input
             label="Enter a new name of the measurement"
