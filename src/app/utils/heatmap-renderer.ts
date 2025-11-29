@@ -50,17 +50,6 @@ export class HeatmapRenderer {
 
     const scale = Math.min(scaleX, scaleY) * 0.9;
 
-    console.table({
-      minX,
-      minY,
-      maxX,
-      maxY,
-      dataWidth,
-      dataHeight,
-      scaleX,
-      scaleY,
-    });
-
     // center view
     this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
     this.ctx.scale(scale, scale);

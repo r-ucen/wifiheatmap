@@ -10,9 +10,7 @@ export class StorageService {
 
   measurements: SavedMeasurement[] = [];
 
-  constructor() {
-    console.log('Storage service initialized');
-  }
+  constructor() {}
 
   async saveMeasurements() {
     await Preferences.set({

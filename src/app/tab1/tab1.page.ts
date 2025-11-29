@@ -37,6 +37,7 @@ import { Subscription, timer, switchMap, tap, filter } from 'rxjs';
 import { WifiService } from '../services/wifi.service';
 import { HeatmapRenderer } from '../utils/heatmap-renderer';
 import { v4 as uuidv4 } from 'uuid';
+import { Platform } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab1',
@@ -76,6 +77,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   isMeasuring: boolean = false;
   settings: AppSettings = DEFAULT_SETTINGS;
   savedMeasurementName: string = '';
+  isCapacitor = true;
 
   private renderer!: HeatmapRenderer;
   private settingsSub!: Subscription;
@@ -85,7 +87,14 @@ export class Tab1Page implements OnInit, OnDestroy {
     private storageService: StorageService,
     private settingsService: SettingsService,
     private wifiService: WifiService,
-  ) {}
+    private platform: Platform,
+  ) {
+    if (this.platform.is('capacitor') && this.platform.is('android')) {
+      this.isCapacitor = true;
+    } else {
+      this.isCapacitor = false;
+    }
+  }
 
   ngOnInit() {
     this.settingsSub = this.settingsService.settings$.subscribe(

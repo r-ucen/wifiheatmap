@@ -1,3 +1,4 @@
+@if (isCapacitor) {
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Measure </ion-title>
@@ -111,3 +112,14 @@
     </ion-col>
   </ion-row>
 </ion-footer>
+} @else {
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Not available </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-item> This platform is not supported </ion-item>
+</ion-content>
+}
