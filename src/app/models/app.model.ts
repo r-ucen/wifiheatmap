@@ -12,9 +12,9 @@ export enum Direction {
 }
 
 export interface SavedMeasurement {
-  id: number;
+  id: string;
   name: string;
-  date: number;
+  date: string;
   heatmapPoints: HeatmapPoint[];
 }
 

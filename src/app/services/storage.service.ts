@@ -31,7 +31,7 @@ export class StorageService {
     await this.saveMeasurements();
   }
 
-  async updateMeasurementName(id: number, newName: string) {
+  async updateMeasurementName(id: string, newName: string) {
     const measurement = this.measurements.find((m) => m.id === id);
     if (measurement) {
       measurement.name = newName;
@@ -39,7 +39,7 @@ export class StorageService {
     }
   }
 
-  async deleteMeasurement(id: number) {
+  async deleteMeasurement(id: string) {
     const m = this.measurements.filter((m) => m.id !== id);
     if (m) {
       this.measurements = m;

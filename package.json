@@ -30,11 +30,11 @@
     "@capacitor/status-bar": "7.0.3",
     "@ionic/angular": "^8.0.0",
     "capacitorjs-plugin-wifi": "file:../../../../CodeProjectsLocal/capacitor-plugin-wifi",
-    "heatmap.js": "^2.0.5",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "simpleheat": "^0.4.0",
     "tslib": "^2.3.0",
+    "uuid": "^13.0.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
