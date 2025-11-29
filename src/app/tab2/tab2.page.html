@@ -12,7 +12,13 @@
 
       <ion-button expand="block" fill="solid">Edit</ion-button>
 
-      <ion-button expand="block" fill="solid" color="danger">Delete</ion-button>
+      <ion-button
+        (click)="confirmDelete(measurement.id, measurement.name)"
+        expand="block"
+        fill="solid"
+        color="danger"
+        >Delete</ion-button
+      >
     </ion-item>
     } @empty {
     <ion-item>
