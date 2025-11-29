@@ -255,6 +255,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       this.savedMeasurement.heatmapPoints = this.heatmapPoints;
 
       this.storageService.addMeasurement(this.savedMeasurement);
+      this.savedMeasurement.name = '';
     }
   }
 }
