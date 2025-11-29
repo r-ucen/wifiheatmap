@@ -30,7 +30,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+  <ion-modal trigger="save-measurement-modal" (willDismiss)="onWillDismiss($event)">
     <ng-template>
       <ion-header>
         <ion-toolbar>
@@ -96,7 +96,7 @@
     </ion-col>
     <ion-col>
       <ion-button
-        id="open-modal"
+        id="save-measurement-modal"
         expand="block"
         fill="solid"
         size="large"
