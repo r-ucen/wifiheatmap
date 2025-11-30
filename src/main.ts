@@ -13,10 +13,26 @@ import {
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
+import {
+  provideFirestore,
+  getFirestore,
+  enableIndexedDbPersistence,
+} from '@angular/fire/firestore';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { environment } from './environments/environment';
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => {
+      const db = getFirestore();
+      enableIndexedDbPersistence(db);
+      return db;
+    }),
   ],
 });

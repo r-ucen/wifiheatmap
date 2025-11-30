@@ -25,6 +25,7 @@ import {
 import { HeatmapRenderer } from '../utils/heatmap-renderer';
 import { Subscription } from 'rxjs';
 import { SettingsService } from '../services/settings.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-tab2',
@@ -43,6 +44,7 @@ import { SettingsService } from '../services/settings.service';
     IonContent,
     IonButton,
     FormsModule,
+    AsyncPipe,
   ],
 })
 export class Tab2Page {

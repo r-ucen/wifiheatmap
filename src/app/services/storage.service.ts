@@ -1,47 +1,79 @@
 import { Injectable } from '@angular/core';
-import { Preferences } from '@capacitor/preferences';
 import { SavedMeasurement } from '../models/app.model';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+} from '@angular/fire/firestore';
+import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
-  private KEY = 'wifi_heatmap_measurements';
+  private user: User | null = null;
+  private measurementsSub?: Subscription;
 
-  measurements: SavedMeasurement[] = [];
+  private measurementsSubject = new BehaviorSubject<SavedMeasurement[]>([]);
+  measurements$ = this.measurementsSubject.asObservable();
 
-  constructor() {}
+  constructor(
+    private firestore: Firestore,
+    private auth: Auth,
+    private router: Router,
+  ) {
+    onAuthStateChanged(this.auth, (user) => {
+      this.user = user;
 
-  async saveMeasurements() {
-    await Preferences.set({
-      key: this.KEY,
-      value: JSON.stringify(this.measurements),
+      this.measurementsSub?.unsubscribe();
+      this.measurementsSubject.next([]);
+
+      if (user) {
+        this.loadMeasurements();
+      } else {
+        this.router.navigate(['/login']);
+      }
     });
   }
 
   async loadMeasurements(): Promise<void> {
-    const { value } = await Preferences.get({ key: this.KEY });
-    this.measurements = value ? JSON.parse(value) : [];
+    const colRef = collection(
+      this.firestore,
+      `users/${this.user?.uid}/measurements`,
+    );
+    collectionData(colRef, { idField: 'uuid' }).subscribe((data) => {
+      this.measurementsSubject.next(data as SavedMeasurement[]);
+    });
   }
 
   async addMeasurement(measurement: SavedMeasurement) {
-    this.measurements.unshift(measurement);
-    await this.saveMeasurements();
+    const docRef = doc(
+      this.firestore,
+      `users/${this.user?.uid}/measurements/${measurement.id}`,
+    );
+    await setDoc(docRef, measurement);
   }
 
   async updateMeasurementName(id: string, newName: string) {
-    const measurement = this.measurements.find((m) => m.id === id);
-    if (measurement) {
-      measurement.name = newName;
-      await this.saveMeasurements();
-    }
+    const docRef = doc(
+      this.firestore,
+      `users/${this.user?.uid}/measurements/${id}`,
+    );
+    await updateDoc(docRef, { name: newName });
   }
 
   async deleteMeasurement(id: string) {
-    const m = this.measurements.filter((m) => m.id !== id);
-    if (m) {
-      this.measurements = m;
-      await this.saveMeasurements();
-    }
+    if (!this.user) return;
+    const docRef = doc(
+      this.firestore,
+      `users/${this.user?.uid}/measurements/${id}`,
+    );
+    await deleteDoc(docRef);
   }
 }

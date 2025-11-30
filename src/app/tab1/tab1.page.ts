@@ -38,6 +38,7 @@ import { WifiService } from '../services/wifi.service';
 import { HeatmapRenderer } from '../utils/heatmap-renderer';
 import { v4 as uuidv4 } from 'uuid';
 import { Platform } from '@ionic/angular/standalone';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-tab1',
@@ -88,6 +89,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     private wifiService: WifiService,
     private platform: Platform,
+    private authService: AuthService,
   ) {
     if (this.platform.is('capacitor') && this.platform.is('android')) {
       this.isCapacitor = true;
@@ -272,5 +274,9 @@ export class Tab1Page implements OnInit, OnDestroy {
       this.savedMeasurementName = '';
       this.storageService.addMeasurement(newMeasurement);
     }
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }

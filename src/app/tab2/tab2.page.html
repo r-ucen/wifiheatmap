@@ -6,7 +6,8 @@
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    @for (measurement of storageService.measurements ; track measurement.id) {
+    @for (measurement of (storageService.measurements$ | async); track
+    measurement.id) {
     <ion-item>
       <ion-label>{{ measurement.name }}</ion-label>
 
