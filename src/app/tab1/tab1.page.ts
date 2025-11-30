@@ -21,6 +21,9 @@ import {
   IonButtons,
   IonInput,
   IonItem,
+  IonList,
+  IonChip,
+  IonIcon,
 } from '@ionic/angular/standalone';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { FormsModule } from '@angular/forms';
@@ -39,6 +42,8 @@ import { HeatmapRenderer } from '../utils/heatmap-renderer';
 import { v4 as uuidv4 } from 'uuid';
 import { Platform } from '@ionic/angular/standalone';
 import { AuthService } from '../services/auth.service';
+import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-tab1',
@@ -46,6 +51,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['tab1.page.scss'],
   standalone: true,
   imports: [
+    IonList,
     IonItem,
     IonInput,
     IonButtons,
@@ -62,6 +68,8 @@ import { AuthService } from '../services/auth.service';
     IonCardContent,
     IonButton,
     FormsModule,
+    IonChip,
+    IonIcon,
   ],
 })
 export class Tab1Page implements OnInit, OnDestroy {
@@ -91,11 +99,10 @@ export class Tab1Page implements OnInit, OnDestroy {
     private platform: Platform,
     private authService: AuthService,
   ) {
-    if (this.platform.is('capacitor') && this.platform.is('android')) {
-      this.isCapacitor = true;
-    } else {
-      this.isCapacitor = false;
-    }
+    addIcons({ arrowBackOutline, arrowForwardOutline });
+
+    this.isCapacitor =
+      this.platform.is('capacitor') && this.platform.is('android');
   }
 
   ngOnInit() {
